@@ -2,295 +2,125 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
 [ApiController]
-[Route("FakeApi")]
+[Route("api/products")]
 public class FakeStoreController : ControllerBase
 {
-    /// <summary>
-    /// Metodo para obtener todos los productos
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("ObtenerPoductos")]
-    public IActionResult ObtenerTodoslosProductos()
+
+    [HttpGet]
+    public IActionResult Products()
     {
+        ProductsDatabase productsDatabase = new ProductsDatabase();
+        List<Producto> allProduct = new List<Producto>();
         try
         {
+            allProduct = productsDatabase.GetProducts();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex);
+        }
+        return Ok(allProduct);
+    }
 
-            using (SqlConnection conexion = new SqlConnection("Server=localhost;Database=FakeStore;Trusted_Connection=True;TrustServerCertificate=True"))
-            {
-                string query = "SELECT * FROM Producto";
-                SqlCommand comando = new SqlCommand(query, conexion);
-                conexion.Open();
 
-                SqlDataReader reader = comando.ExecuteReader();
-                List<Producto> productos = new List<Producto>();
-
-                while (reader.Read())
-                {
-                    productos.Add(new Producto
-                    {
-                        Id = reader.GetInt32(0),
-                        Nombre = reader.GetString(1),
-                        Detalle = reader.GetString(2),
-                        Precio = reader.GetInt32(3),
-                        Categoria = reader.GetString(4),
-                    });
-                }
-
-                conexion.Close();
-                return Ok(productos);
-            }
+    [HttpGet("category/{Categoria}")]
+    public IActionResult ProductByCategory([FromQuery] string category)
+    {
+        ProductsDatabase productsDatabase = new ProductsDatabase();
+        List<Producto> productByCategory = new List<Producto>();
+        try
+        {
+           productByCategory =productsDatabase.GetByCategory(category);
         }
         catch (Exception ex)
         {
             return StatusCode(500, "Error en el servidor: " + ex.Message);
         }
+        return Ok(productByCategory);
     }
-   
-    /// <summary>
-    /// Medoto para Consultar producto por categoria
-    /// </summary>
-    /// <param name="categoria"></param>
-    /// <returns></returns>
-    [HttpGet("ConsultarCategoria")]
-    public IActionResult ConsultarProductoCategoria([FromQuery] string categoria)
+
+
+    [HttpGet("name/{Nombre}")]
+    public IActionResult ProductsByName(string name)
     {
+        ProductsDatabase productsDatabase = new ProductsDatabase();
+        List<Producto> productosByName = new List<Producto>();
         try
         {
-            using (SqlConnection conexion = new SqlConnection("Server=localhost;Database=FakeStore;Trusted_Connection=True;TrustServerCertificate=True"))
-            {
-                string query = "SELECT * FROM Producto WHERE Categoria = @categoria";
-                SqlCommand comando = new SqlCommand(query, conexion);
-                comando.Parameters.AddWithValue("@categoria", categoria);
-                conexion.Open();
-
-                SqlDataReader reader = comando.ExecuteReader();
-                List<Producto> productos = new List<Producto>();
-
-                while (reader.Read())
-                {
-                    productos.Add(new Producto
-                    {
-                        Nombre = reader.GetString(1),
-                        Detalle = reader.GetString(2),
-                        Precio = reader.GetInt32(3),
-                        Categoria = reader.GetString(4),
-                    });
-                }
-
-                conexion.Close();
-                return Ok(productos);
-            }
+            productosByName = productsDatabase.GetByName(name);
         }
         catch (Exception ex)
         {
-            return StatusCode(500, "Error en el servidor: " + ex.Message);
+            return StatusCode(500, ex);
         }
+        return Ok(productosByName);
     }
 
-    /// <summary>
-    /// Consultar producto por nombre
-    /// </summary>
-    /// <param name="nombre"></param>
-    /// <returns></returns>
-    [HttpGet("ConsultarProdcuto")]
-    public IActionResult ConsultarProducto([FromQuery] string nombre)
+
+    [HttpPost]
+    public IActionResult CreateProduct([FromBody] Producto product)
     {
+        ProductsDatabase productsDatabase = new ProductsDatabase();
         try
         {
-            using (SqlConnection conexion = new SqlConnection("Server=localhost;Database=FakeStore;Trusted_Connection=True;TrustServerCertificate=True"))
-            {
-                string query = "SELECT * FROM Producto WHERE Nombre = @nombre";
-                SqlCommand comando = new SqlCommand(query, conexion);
-                comando.Parameters.AddWithValue("@nombre", nombre);
-                conexion.Open();
-
-                SqlDataReader reader = comando.ExecuteReader();
-                List<Producto> productos = new List<Producto>();
-
-                while (reader.Read())
-                {
-                    productos.Add(new Producto
-                    {
-                        Id = reader.GetInt32(0),
-                        Nombre = reader.GetString(1),
-                        Detalle = reader.GetString(2),
-                        Precio = reader.GetInt32(3),
-                        Categoria = reader.GetString(4),
-                    });
-                }
-
-                conexion.Close();
-                return Ok(productos);
-            }
+            productsDatabase.CreateProduct(product);
         }
         catch (Exception ex)
         {
-            return StatusCode(500, "Error en el servidor: " + ex.Message);
+            return StatusCode(500, ex);
         }
+        return Ok("Producto insertado correctamente");
     }
 
-    /// <summary>
-    /// Crear productos unitarios
-    /// </summary>
-    /// <param name="producto"></param>
-    /// <returns></returns>
-    [HttpPost("CrearProductos")]
-    public IActionResult InsertarProducto([FromBody] Producto producto)
+
+    [HttpPost("masive")]
+    public IActionResult CreateProducts([FromBody] List<Producto> products)
     {
-        try
-        {
-            using (SqlConnection conexion = new SqlConnection("Server=localhost;Database=FakeStore;Trusted_Connection=True;TrustServerCertificate=True"))
-            {
-                conexion.Open();
-                string verificarQuery = "SELECT COUNT(*) FROM Producto WHERE Nombre = @Nombre";
-                SqlCommand verificarComando = new SqlCommand(verificarQuery, conexion);
-                verificarComando.Parameters.AddWithValue("@Nombre", producto.Nombre);
-
-                int count = (int)verificarComando.ExecuteScalar();
-                if (count > 0)
-                {
-                    return BadRequest("El producto ya existe.");
-                }
-
-                string insertQuery = "INSERT INTO Producto (Nombre, Detalle, Precio, Categoria) VALUES (@Nombre, @Detalle, @Precio, @Categoria)";
-                SqlCommand insertComando = new SqlCommand(insertQuery, conexion);
-                insertComando.Parameters.AddWithValue("@Nombre", producto.Nombre);
-                insertComando.Parameters.AddWithValue("@Detalle", producto.Detalle);
-                insertComando.Parameters.AddWithValue("@Precio", producto.Precio);
-                insertComando.Parameters.AddWithValue("@Categoria", producto.Categoria);
-
-                int filasAfectadas = insertComando.ExecuteNonQuery();
-                return filasAfectadas > 0 ? Ok("Producto agregado correctamente.") : StatusCode(500, "No se pudo insertar el producto.");
-            }
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "Error en el servidor: " + ex.Message);
-        }
-    }
-
-    /// <summary>
-    /// Crear productos masivos
-    /// </summary>
-    /// <param name="productos"></param>
-    /// <returns></returns>
-    [HttpPost("CrearProductosMasivos")]
-    public IActionResult InsertarProductosMasivos([FromBody] List<Producto> productos)
-    {
-        if (productos == null || productos.Count == 0)
+        if (products == null || products.Count == 0)
         {
             return BadRequest("La lista de productos está vacía.");
         }
-
+         ProductsDatabase productsDatabase = new ProductsDatabase();
         try
         {
-            using (SqlConnection conexion = new SqlConnection("Server=localhost;Database=FakeStore;Trusted_Connection=True;TrustServerCertificate=True"))
-            {
-                conexion.Open();
-
-                using (SqlTransaction transaction = conexion.BeginTransaction())
-                {
-                    try
-                    {
-                        foreach (var producto in productos)
-                        {
-                            string verificarQuery = "SELECT COUNT(*) FROM Producto WHERE Nombre = @Nombre";
-                            SqlCommand verificarComando = new SqlCommand(verificarQuery, conexion, transaction);
-                            verificarComando.Parameters.AddWithValue("@Nombre", producto.Nombre);
-
-                            int count = (int)verificarComando.ExecuteScalar();
-                            if (count > 0)
-                            {
-                                return BadRequest($"El producto '{producto.Nombre}' ya existe.");
-                            }
-
-                            string insertQuery = "INSERT INTO Producto (Nombre, Detalle, Precio, Categoria) VALUES (@Nombre, @Detalle, @Precio, @Categoria)";
-                            SqlCommand insertComando = new SqlCommand(insertQuery, conexion, transaction);
-                            insertComando.Parameters.AddWithValue("@Nombre", producto.Nombre);
-                            insertComando.Parameters.AddWithValue("@Detalle", producto.Detalle);
-                            insertComando.Parameters.AddWithValue("@Precio", producto.Precio);
-                            insertComando.Parameters.AddWithValue("@Categoria", producto.Categoria);
-
-                            insertComando.ExecuteNonQuery();
-                        }
-
-                        transaction.Commit();
-                        return Ok("Productos agregados correctamente.");
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        return StatusCode(500, "Error al insertar productos: " + ex.Message);
-                    }
-                }
-            }
+            productsDatabase.CreateProducts(products);
         }
         catch (Exception ex)
         {
             return StatusCode(500, "Error en el servidor: " + ex.Message);
         }
+         return Ok("Productos insertados correctamente");
     }
 
-    /// <summary>
-    /// Actualizar productos
-    /// </summary>
-    /// <param name="producto"></param>
-    /// <returns></returns>
-    [HttpPut("ActualizarProducto")]
+
+    [HttpPut("{id}")]
     public IActionResult ActualizarProductos([FromBody] Producto producto)
     {
+         ProductsDatabase productsDatabase = new ProductsDatabase();
         try
         {
-            using (SqlConnection conexion = new SqlConnection("Server=localhost;Database=FakeStore;Trusted_Connection=True;TrustServerCertificate=True"))
-            {
-                conexion.Open();
-                string insertQuery = "UPDATE Producto SET Nombre = @Nombre, Detalle = @Detalle, Precio = @Precio, Categoria = @Categoria WHERE Id = @id";
-                SqlCommand insertComando = new SqlCommand(insertQuery, conexion);
-                insertComando.Parameters.AddWithValue("@id", producto.Id);
-                insertComando.Parameters.AddWithValue("@Nombre", producto.Nombre);
-                insertComando.Parameters.AddWithValue("@Detalle", producto.Detalle);
-                insertComando.Parameters.AddWithValue("@Precio", producto.Precio);
-                insertComando.Parameters.AddWithValue("@Categoria", producto.Categoria);
-
-                int filasAfectadas = insertComando.ExecuteNonQuery();
-                return filasAfectadas > 0 ? Ok("Producto actualizado correctamente.") : StatusCode(500, "No se pudo actualizar el producto.");
-            }
+            productsDatabase.UpdateProduct(producto);
         }
         catch (Exception ex)
         {
             return StatusCode(500, "Error en el servidor: " + ex.Message);
         }
+        return Ok("Producto actualizado");
     }
 
-    /// <summary>
-    /// Eliminar productos 
-    /// </summary>
-    /// <param name="nombre"></param>
-    /// <returns></returns>
-    [HttpDelete("EliminarProductos")]
-    public IActionResult BorrarProductos([FromQuery] string nombre)
+
+    [HttpDelete("{id}")]
+    public IActionResult BorrarProductos([FromRoute] string id)
     {
+        ProductsDatabase productsDatabase = new ProductsDatabase();
         try
         {
-            using (SqlConnection conexion = new SqlConnection("Server=localhost;Database=FakeStore;Trusted_Connection=True;TrustServerCertificate=True"))
-            {
-                string query = "DELETE FROM Producto WHERE Nombre = @nombre";
-                SqlCommand comando = new SqlCommand(query, conexion);
-                comando.Parameters.AddWithValue("@nombre", nombre);
-
-                conexion.Open();
-                int filasAfectadas = comando.ExecuteNonQuery();
-                conexion.Close();
-
-                if (filasAfectadas > 0)
-                    return Ok("Producto eliminado Correctamente");
-                else
-                    return BadRequest("No se encontro el el producto a eliminar");
-            }
+           productsDatabase.DeleteProduct(id);
         }
         catch (Exception ex)
         {
             return StatusCode(500, "Error en el servidor: " + ex.Message);
         }
+         return Ok("Productos eliminado Correctamente");
     }
 }
