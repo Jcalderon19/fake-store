@@ -3,13 +3,16 @@
     <h1>Agregar Producto</h1>
     <form>
       <label>Nombre:</label>
-      <input type="text" v-model="nuevoProducto.title" required />
+      <input type="text" v-model="newproduct.Nombre" required />
 
-      <label>Precio:</label>
-      <input type="number" v-model="nuevoProducto.price" required />
+      <label>Detalle </label>
+      <input type="text" v-model="newproduct.Detalle" required />
 
-      <label>Imagen (URL):</label>
-      <input type="text" v-model="nuevoProducto.image" required />
+      <label>Precio</label>
+      <input type="number" v-model="newproduct.Precio" required />
+
+      <label>Categoria</label>
+      <input type="text" v-model="newproduct.Categoria" required />
 
       <button type="submit" @click="agregarProducto">Agregar</button>
     </form>
@@ -22,10 +25,11 @@ import api from "../services/api";
 export default {
   data() {
     return {
-      nuevoProducto: {
-        title: "",
-        price: 0,
-        image: "",
+      newproduct: {
+        Nombre: "",
+        Detalle: "",
+        Precio: 0,
+        Categoria: "",
       },
     };
   },

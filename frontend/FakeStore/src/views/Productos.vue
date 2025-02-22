@@ -9,7 +9,7 @@
     </div>
     <div class="productos-grid">
       <div v-for="producto in productos" :key="producto.id" class="producto-card">
-        <router-link to="/VerProducto/{{producto.id}}">
+        <router-link to="/detalle/{{producto.id}}">
           {{producto.nombre}}
         </router-link>
         <p>{{ producto.detalle }}</p>
@@ -28,16 +28,13 @@ export default {
   data() {
     return {
       productos: [],
-      loading:true
     };
   },
   async created() {
     try {
-      this.productos = await api.getProductos();
+      this.productos = await api.GetProductos();
     } catch (error) {
       console.error("Error cargando productos:", error);
-    } finally {
-      this.loading = false;
     }
   },
 };

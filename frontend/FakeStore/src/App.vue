@@ -5,7 +5,9 @@
       <nav>
         <router-link to="/">Inicio</router-link>
         <router-link to="/productos">Productos</router-link>
-        <router-link to="/agregar">Gestion de productos</router-link>
+        <router-link to="/agregar">Agregar de productos</router-link>
+        <router-link to="/actualizar">Actualizar de productos</router-link>
+        <router-link to="/eliminar">Eliminar de productos</router-link>
       </nav>
     </header>
     <main>

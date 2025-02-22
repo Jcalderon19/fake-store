@@ -1,24 +1,30 @@
-const API_URL = "http://localhost:5291/FakeApi";
+const API_URL = "http://localhost:5291/api/products";
 
 export default {
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-},
-  async getProductos() {
-    const response = await fetch(`${API_URL}/ObtenerPoductos`);
+  
+  async GetProductos() {
+    const response = await fetch(`${API_URL}`);
     return response.json();
   },
-  async consultarProducto(){
-    const response = await fetch(`${API_URL}/CrearProductos`, {
-      method: "",
-      body: JSON.stringify(producto),
+
+  async ProductByCategory(category) {
+    const response = await fetch(`${API_URL}/category/${category}`, {
+      method: "GET",
       headers: { "Content-Type": "application/json" },
     });
     return response.json();
   },
 
-  async addProducto(producto) {
-    const response = await fetch(`${API_URL}/CrearProductos`, {
+  async ProductsByName(name) {
+    const response = await fetch(`${API_URL}/name/${name}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.json();
+  },
+
+  async CreateProduct(producto) {
+    const response = await fetch(`${API_URL}`, {
       method: "POST",
       body: JSON.stringify(producto),
       headers: { "Content-Type": "application/json" },
@@ -26,29 +32,27 @@ export default {
     return response.json();
   },
 
-  async addProducto(producto) {
-    const response = await fetch(`${API_URL}/CrearProductosMasivos`, {
+  async CreateProducts(products) {
+    const response = await fetch(`${API_URL}/masive`, {  // La API usa "masive"
       method: "POST",
-      body: JSON.stringify(producto),
+      body: JSON.stringify(products),
       headers: { "Content-Type": "application/json" },
     });
     return response.json();
   },
 
-
-  async updateProducto(id, producto) {
-    const response = await fetch(`${API_URL}/ActualizarProducto`, {
+  async UpdateProduct(id, producto) {
+    const response = await fetch(`${API_URL}/${id}`, {
       method: "PUT",
-      body: JSON.stringify({ id, ...producto }),
+      body: JSON.stringify(producto),
       headers: { "Content-Type": "application/json" },
     });
     return response.json();
   },
 
-  async deleteProducto(id) {
-    const response = await fetch(`${API_URL}/EliminarProductos`, {
+  async DeleteProduct(id) {
+    const response = await fetch(`${API_URL}/${id}`, {
       method: "DELETE",
-      body: JSON.stringify({ id }),
       headers: { "Content-Type": "application/json" },
     });
     return response.json();

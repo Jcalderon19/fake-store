@@ -23,14 +23,14 @@ public class FakeStoreController : ControllerBase
     }
 
 
-    [HttpGet("category/{Categoria}")]
-    public IActionResult ProductByCategory([FromQuery] string category)
+    [HttpGet("category/{category}")]
+    public IActionResult ProductByCategory(string category)
     {
         ProductsDatabase productsDatabase = new ProductsDatabase();
         List<Producto> productByCategory = new List<Producto>();
         try
         {
-           productByCategory =productsDatabase.GetByCategory(category);
+            productByCategory = productsDatabase.GetByCategory(category);
         }
         catch (Exception ex)
         {
@@ -40,7 +40,7 @@ public class FakeStoreController : ControllerBase
     }
 
 
-    [HttpGet("name/{Nombre}")]
+    [HttpGet("name/{name}")]
     public IActionResult ProductsByName(string name)
     {
         ProductsDatabase productsDatabase = new ProductsDatabase();
@@ -67,7 +67,7 @@ public class FakeStoreController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ex);
+            return StatusCode(500, ex.Message);
         }
         return Ok("Producto insertado correctamente");
     }
@@ -80,26 +80,29 @@ public class FakeStoreController : ControllerBase
         {
             return BadRequest("La lista de productos está vacía.");
         }
-         ProductsDatabase productsDatabase = new ProductsDatabase();
-        try
+
+        ProductsDatabase productsDatabase = new ProductsDatabase();
+        List<string> errores = productsDatabase.CreateProducts(products); 
+
+        if (errores.Count == 0)
         {
-            productsDatabase.CreateProducts(products);
+            return Ok("Todos los productos fueron insertados correctamente.");
         }
-        catch (Exception ex)
+
+        return StatusCode(207, new
         {
-            return StatusCode(500, "Error en el servidor: " + ex.Message);
-        }
-         return Ok("Productos insertados correctamente");
+            Mensaje = "Algunos productos no se insertaron correctamente.",
+            Errores = errores
+        });
     }
-
-
+    
     [HttpPut("{id}")]
-    public IActionResult ActualizarProductos([FromBody] Producto producto)
+    public IActionResult UpdateProduct([FromBody] Producto product)
     {
-         ProductsDatabase productsDatabase = new ProductsDatabase();
+        ProductsDatabase productsDatabase = new ProductsDatabase();
         try
         {
-            productsDatabase.UpdateProduct(producto);
+            productsDatabase.UpdateProduct(product);
         }
         catch (Exception ex)
         {
@@ -110,17 +113,17 @@ public class FakeStoreController : ControllerBase
 
 
     [HttpDelete("{id}")]
-    public IActionResult BorrarProductos([FromRoute] string id)
+    public IActionResult DeleteProduct(string id)
     {
         ProductsDatabase productsDatabase = new ProductsDatabase();
         try
         {
-           productsDatabase.DeleteProduct(id);
+            productsDatabase.DeleteProduct(id);
         }
         catch (Exception ex)
         {
             return StatusCode(500, "Error en el servidor: " + ex.Message);
         }
-         return Ok("Productos eliminado Correctamente");
+        return Ok("Productos eliminado Correctamente");
     }
 }
