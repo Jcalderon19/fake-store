@@ -75,11 +75,48 @@ fake-store/
 5. Usa los filtros para buscar productos o accede a sus detalles.
 
 ## Conexión con la API
-Para interactuar con la API, puedes usar herramientas como Postman.
-Si deseas agregar imágenes de Postman, súbelas a una carpeta dentro del proyecto y agrégalas en el README con:
-```md
-![Descripción de la imagen](ruta/imagen.png)
-```
+## Endpoints de la API
+Obtener todos los productos
+
+Método: GET
+URL: /api/products
+Descripción: Retorna una lista con todos los productos almacenados en la base de datos.
+Obtener productos por categoría
+
+Método: GET
+URL: /api/products/category/{category}
+Parámetros: category (string) → Nombre de la categoría
+Descripción: Devuelve todos los productos que pertenecen a una categoría específica.
+Obtener productos por nombre
+
+Método: GET
+URL: /api/products/name/{name}
+Parámetros: name (string) → Nombre del producto
+Descripción: Filtra y devuelve productos cuyo nombre coincide con el valor proporcionado.
+Crear un producto
+
+Método: POST
+URL: /api/products
+Cuerpo: Objeto Producto en formato JSON
+Descripción: Agrega un nuevo producto a la base de datos.
+Crear múltiples productos
+
+Método: POST
+URL: /api/products/masive
+Cuerpo: Lista de objetos Producto en formato JSON
+Descripción: Inserta varios productos a la vez en la base de datos. Si algunos fallan, devuelve un mensaje con los errores.
+Actualizar un producto
+
+Método: PUT
+URL: /api/products/{id}
+Cuerpo: Objeto Producto en formato JSON
+Descripción: Modifica los datos de un producto existente en la base de datos.
+Eliminar un producto
+
+Método: DELETE
+URL: /api/products/{id}
+Parámetros: id (string) → Identificador único del producto
+Descripción: Elimina un producto de la base de datos según su ID.
 
 ## Licencia
 Este proyecto está bajo la licencia MIT.
