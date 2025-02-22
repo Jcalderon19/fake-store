@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 
 [ApiController]
 [Route("api/products")]
@@ -95,7 +94,8 @@ public class FakeStoreController : ControllerBase
             Errores = errores
         });
     }
-    
+
+
     [HttpPut("{id}")]
     public IActionResult UpdateProduct([FromBody] Producto product)
     {
