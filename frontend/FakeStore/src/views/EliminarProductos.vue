@@ -52,8 +52,11 @@ h1{
 select, button {
   display: block;
   margin-bottom: 10px;
+  width: 200px;
+  height: 50px;
 }
 label{
   color: beige;
+  font-size: 20px;
 }
 </style>

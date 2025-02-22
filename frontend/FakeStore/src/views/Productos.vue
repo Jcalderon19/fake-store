@@ -22,17 +22,28 @@
 
     <div class="productos-grid">
       <div
-        v-for="producto in productos" :key="producto.id"
+        v-for="producto in productosPaginados"
+        :key="producto.id"
         class="producto-card"
       >
         <router-link
           class="Name-Product" :to="`/detalle/${encodeURIComponent(producto.nombre)}`">
           {{ producto.nombre }}
         </router-link>
-        <p>{{ producto.detalle }}</p>
+        <p><strong>Detalle: </strong>{{ producto.detalle }}</p>
         <p><strong>Precio:</strong> ${{ producto.precio }}</p>
         <p><strong>Categoría:</strong> {{ producto.categoria }}</p>
       </div>
+    </div>
+
+    <div class="pagination">
+      <button @click="anteriorPagina" :disabled="paginaActual === 1">
+        Anterior
+      </button>
+      <span>Página {{ paginaActual }} de {{ totalPaginas }}</span>
+      <button @click="siguientePagina" :disabled="paginaActual === totalPaginas">
+        Siguiente
+      </button>
     </div>
   </div>
 </template>
@@ -44,54 +55,78 @@ export default {
   data() {
     return {
       productos: [],
-      nombre: "", 
-      categoria: "", 
+      nombre: "",
+      categoria: "",
+      paginaActual: 1,
+      productosPorPagina: 5, 
     };
   },
+  computed: {
+    productosPaginados() {
+      const inicio = (this.paginaActual - 1) * this.productosPorPagina;
+      const fin = inicio + this.productosPorPagina;
+      return this.productos.slice(inicio, fin);
+    },
+    totalPaginas() {
+      return Math.ceil(this.productos.length / this.productosPorPagina);
+    },
+  },
   async created() {
-    await this.cargarProductos(); 
+    await this.cargarProductos();
   },
   methods: {
     async cargarProductos() {
       try {
         this.productos = await api.GetProductos();
+        this.paginaActual = 1; 
       } catch (error) {
         console.error("Error cargando productos:", error);
       }
     },
     async buscarPorNombre() {
       if (this.nombre.trim() === "") {
-        await this.cargarProductos(); 
+        await this.cargarProductos();
         return;
       }
       try {
         this.productos = await api.ProductsByName(this.nombre);
+        this.paginaActual = 1;
       } catch (error) {
         console.error("Error buscando por nombre:", error);
       }
     },
     async buscarPorCategoria() {
       if (this.categoria.trim() === "") {
-        await this.cargarProductos(); 
+        await this.cargarProductos();
         return;
       }
       try {
         this.productos = await api.ProductByCategory(this.categoria);
+        this.paginaActual = 1;
       } catch (error) {
         console.error("Error buscando por categoría:", error);
+      }
+    },
+    anteriorPagina() {
+      if (this.paginaActual > 1) {
+        this.paginaActual--;
+      }
+    },
+    siguientePagina() {
+      if (this.paginaActual < this.totalPaginas) {
+        this.paginaActual++;
       }
     },
   },
 };
 </script>
+
 <style scoped>
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #222;
 }
-
 
 .title {
   text-align: center;
@@ -152,5 +187,27 @@ h2 {
 p {
   font-size: 14px;
   margin: 5px 0;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 </style>

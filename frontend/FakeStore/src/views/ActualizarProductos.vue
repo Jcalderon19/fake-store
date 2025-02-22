@@ -83,11 +83,26 @@ export default {
 h1{
   color: beige;
 }
-select, input {
+input {
   display: block;
   margin-bottom: 10px;
+  border-radius: 10px;
+  width: 300px;
+  height: 50px;
+}
+select{
+  width: 300px;
+  height: 50px;
+  border-radius: 10px;
 }
 label{
   color: beige;
+  margin: 10px;
+  font-size: 20px;
+}
+button{
+  border-radius: 10px;
+  width: 100px;
+  height: 50px;
 }
 </style>

@@ -30,12 +30,12 @@ export default {
       headers: { "Content-Type": "application/json" },
     });
   
-    // Verifica si la respuesta es correcta
+    
     if (!response.ok) {
       throw new Error(`Error en la API: ${response.statusText}`);
     }
   
-    return response.json(); // Esto ahora funcionará si la API devuelve JSON
+    return response.json(); 
   },
 
   async CreateProducts(products) {
@@ -44,12 +44,12 @@ export default {
       body: JSON.stringify(products),
       headers: { "Content-Type": "application/json" },
     });
-   // Verifica si la respuesta es correcta
+   
    if (!response.ok) {
     throw new Error(`Error en la API: ${response.statusText}`);
   }
 
-  return response.json(); // Esto ahora funcionará si la API devuelve JSON
+  return response.json(); 
 },
 
   async UpdateProduct(producto) {
@@ -58,12 +58,12 @@ export default {
       body: JSON.stringify(producto),
       headers: { "Content-Type": "application/json" },
     });
-    // Verifica si la respuesta es correcta
+  
     if (!response.ok) {
       throw new Error(`Error en la API: ${response.statusText}`);
     }
   
-    return response.json(); // Esto ahora funcionará si la API devuelve JSON
+    return response.json(); 
   },
 
   async DeleteProduct(id) {
@@ -71,11 +71,11 @@ export default {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     });
-    // Verifica si la respuesta es correcta
+    
     if (!response.ok) {
       throw new Error(`Error en la API: ${response.statusText}`);
     }
   
-    return response.json(); // Esto ahora funcionará si la API devuelve JSON
+    return response.json(); 
   }
 };

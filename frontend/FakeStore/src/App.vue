@@ -5,9 +5,9 @@
       <nav>
         <router-link to="/">Inicio</router-link>
         <router-link to="/productos">Productos</router-link>
-        <router-link to="/agregar">Agregar de productos</router-link>
-        <router-link to="/actualizar">Actualizar de productos</router-link>
-        <router-link to="/eliminar">Eliminar de productos</router-link>
+        <router-link to="/agregar">Agregar productos</router-link>
+        <router-link to="/actualizar">Actualizar productos</router-link>
+        <router-link to="/eliminar">Eliminar productos</router-link>
       </nav>
     </header>
     <main>
@@ -54,7 +54,7 @@ nav a:hover {
 main{
  display: flex;
  justify-content: center;
- background-color: #222;
+ background-color: #aa4040;
  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 </style>

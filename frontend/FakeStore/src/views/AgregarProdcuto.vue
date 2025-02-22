@@ -5,13 +5,13 @@
       <label>Nombre:</label>
       <input type="text" v-model="newproduct.Nombre" required />
 
-      <label>Detalle </label>
+      <label>Detalle: </label>
       <input type="text" v-model="newproduct.Detalle" required />
 
-      <label>Precio</label>
+      <label>Precio: </label>
       <input type="number" v-model="newproduct.Precio" required />
 
-      <label>Categoria</label>
+      <label>Categoria:</label>
       <input type="text" v-model="newproduct.Categoria" required />
 
       <button type="submit" @click="agregarProducto">Agregar</button>
@@ -54,8 +54,18 @@ h1{
 input {
   display: block;
   margin-bottom: 10px;
+  border-radius: 10px;
+  width: 300px;
+  height: 50px;
 }
 label{
   color: beige;
+  font-size: 20px;
+  margin: 10px;
+}
+button{
+  border-radius: 10px;
+  width: 100px;
+  height: 50px;
 }
 </style>
