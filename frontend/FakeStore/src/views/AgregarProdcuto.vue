@@ -36,10 +36,10 @@ export default {
   methods: {
     async agregarProducto() {
       try {
-        await api.addProducto(this.nuevoProducto);
-        alert("Producto agregado con éxito");
-      this.$router.push('/productos'); 
+        const response = await api.CreateProduct(this.newproduct);
+        alert(response.message || "Se agregó el producto");
       } catch (error) {
+        alert("No se pudo crear el producto");
         console.error("Error agregando producto:", error);
       }
     },
@@ -48,8 +48,14 @@ export default {
 </script>
 
 <style scoped>
+h1{
+  color: beige;
+}
 input {
   display: block;
   margin-bottom: 10px;
+}
+label{
+  color: beige;
 }
 </style>

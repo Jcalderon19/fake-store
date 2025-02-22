@@ -69,10 +69,10 @@ export default {
       }
       try {
         await api.UpdateProduct(this.newproduct);
-        alert("Producto actualizado con éxito");
-        this.$router.push('/productos'); 
+        alert(response.message || "Se Actualizo el producto");
       } catch (error) {
-        console.error("Error actualizando producto:", error);
+        alert("No se pudo Actualizar el producto");
+        console.error("Error Actualizando producto:", error);
       }
     },
   },
@@ -80,8 +80,14 @@ export default {
 </script>
 
 <style scoped>
+h1{
+  color: beige;
+}
 select, input {
   display: block;
   margin-bottom: 10px;
+}
+label{
+  color: beige;
 }
 </style>

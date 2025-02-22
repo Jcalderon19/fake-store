@@ -29,7 +29,13 @@ export default {
       body: JSON.stringify(producto),
       headers: { "Content-Type": "application/json" },
     });
-    return response.json();
+  
+    // Verifica si la respuesta es correcta
+    if (!response.ok) {
+      throw new Error(`Error en la API: ${response.statusText}`);
+    }
+  
+    return response.json(); // Esto ahora funcionará si la API devuelve JSON
   },
 
   async CreateProducts(products) {
@@ -38,8 +44,13 @@ export default {
       body: JSON.stringify(products),
       headers: { "Content-Type": "application/json" },
     });
-    return response.json();
-  },
+   // Verifica si la respuesta es correcta
+   if (!response.ok) {
+    throw new Error(`Error en la API: ${response.statusText}`);
+  }
+
+  return response.json(); // Esto ahora funcionará si la API devuelve JSON
+},
 
   async UpdateProduct(producto) {
     const response = await fetch(`${API_URL}/${producto.id}`, {
@@ -47,7 +58,12 @@ export default {
       body: JSON.stringify(producto),
       headers: { "Content-Type": "application/json" },
     });
-    return response.json();
+    // Verifica si la respuesta es correcta
+    if (!response.ok) {
+      throw new Error(`Error en la API: ${response.statusText}`);
+    }
+  
+    return response.json(); // Esto ahora funcionará si la API devuelve JSON
   },
 
   async DeleteProduct(id) {
@@ -55,6 +71,11 @@ export default {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     });
-    return response.json();
+    // Verifica si la respuesta es correcta
+    if (!response.ok) {
+      throw new Error(`Error en la API: ${response.statusText}`);
+    }
+  
+    return response.json(); // Esto ahora funcionará si la API devuelve JSON
   }
 };

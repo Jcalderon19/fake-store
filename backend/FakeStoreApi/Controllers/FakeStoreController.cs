@@ -68,7 +68,7 @@ public class FakeStoreController : ControllerBase
         {
             return StatusCode(500, ex.Message);
         }
-        return Ok("Producto insertado correctamente");
+        return Ok(new { message = "Producto insertado correctamente" });
     }
 
 
@@ -108,7 +108,7 @@ public class FakeStoreController : ControllerBase
         {
             return StatusCode(500, "Error en el servidor: " + ex.Message);
         }
-        return Ok("Producto actualizado");
+        return Ok(new { message = "Producto actualizado correctamente" });
     }
 
 
@@ -124,6 +124,6 @@ public class FakeStoreController : ControllerBase
         {
             return StatusCode(500, "Error en el servidor: " + ex.Message);
         }
-        return Ok("Productos eliminado Correctamente");
+        return Ok(new { message = "Producto eliminado correctamente" });;
     }
 }
