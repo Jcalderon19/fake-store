@@ -23,22 +23,15 @@ export default {
 </script>
 
 <style scoped>
-/* Estilos generales */
-#app {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-}
 
-/* Estilos del encabezado */
 header {
+  text-align: center;
   background: #333;
   color: white;
   padding: 15px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-/* Estilos de la navegación */
 nav {
   display: flex;
   justify-content: center;
@@ -57,5 +50,11 @@ nav a {
 
 nav a:hover {
   background: #555;
+}
+main{
+ display: flex;
+ justify-content: center;
+ background-color: #222;
+ font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 </style>

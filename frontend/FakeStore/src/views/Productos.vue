@@ -1,22 +1,38 @@
 <template>
   <div class="container">
     <h1 class="title">Lista de Productos</h1>
+
     <div class="container-seachs">
       <label class="descripcion">Busca tus productos</label>
-      <input placeholder="Coca-Cola" class="input-seach"></input>
-      <label class="descripcion">Busca por categoria</label>
-      <input placeholder="Bebidas" class="input-categoria"></input>
+      <input 
+        placeholder="Coca-Cola" 
+        class="input-seach" 
+        v-model="nombre"
+        @input="buscarPorNombre"
+      />
+
+      <label class="descripcion">Busca por categoría</label>
+      <input 
+        placeholder="Bebidas" 
+        class="input-categoria" 
+        v-model="categoria"
+        @input="buscarPorCategoria"
+      />
     </div>
+
     <div class="productos-grid">
-      <div v-for="producto in productos" :key="producto.id" class="producto-card">
-        <router-link to="/detalle/{{producto.id}}">
-          {{producto.nombre}}
+      <div
+        v-for="producto in productos" :key="producto.id"
+        class="producto-card"
+      >
+        <router-link
+          class="Name-Product" :to="`/detalle/${encodeURIComponent(producto.nombre)}`">
+          {{ producto.nombre }}
         </router-link>
         <p>{{ producto.detalle }}</p>
         <p><strong>Precio:</strong> ${{ producto.precio }}</p>
         <p><strong>Categoría:</strong> {{ producto.categoria }}</p>
       </div>
-      
     </div>
   </div>
 </template>
@@ -28,18 +44,46 @@ export default {
   data() {
     return {
       productos: [],
+      nombre: "", 
+      categoria: "", 
     };
   },
   async created() {
-    try {
-      this.productos = await api.GetProductos();
-    } catch (error) {
-      console.error("Error cargando productos:", error);
-    }
+    await this.cargarProductos(); 
+  },
+  methods: {
+    async cargarProductos() {
+      try {
+        this.productos = await api.GetProductos();
+      } catch (error) {
+        console.error("Error cargando productos:", error);
+      }
+    },
+    async buscarPorNombre() {
+      if (this.nombre.trim() === "") {
+        await this.cargarProductos(); 
+        return;
+      }
+      try {
+        this.productos = await api.ProductsByName(this.nombre);
+      } catch (error) {
+        console.error("Error buscando por nombre:", error);
+      }
+    },
+    async buscarPorCategoria() {
+      if (this.categoria.trim() === "") {
+        await this.cargarProductos(); 
+        return;
+      }
+      try {
+        this.productos = await api.ProductByCategory(this.categoria);
+      } catch (error) {
+        console.error("Error buscando por categoría:", error);
+      }
+    },
   },
 };
 </script>
-
 <style scoped>
 .container {
   max-width: 1200px;
@@ -48,7 +92,7 @@ export default {
   background-color: #222;
 }
 
-/* Título */
+
 .title {
   text-align: center;
   font-size: 24px;
@@ -56,30 +100,30 @@ export default {
   margin-bottom: 20px;
   color: beige;
 }
-.container-seachs{
+.container-seachs {
   display: flex;
   flex-direction: initial;
   padding: 20px;
 }
-.descripcion{
+.descripcion {
   padding: 10px;
-  color:beige;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  color: beige;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   font-size: 20px;
 }
-.input-seach,.input-categoria{
+.input-seach,
+.input-categoria {
   border-radius: 10px;
   font-family: system-ui;
   font-size: 20px;
 }
-/* Grid de productos */
+
 .productos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
 }
 
-/* Tarjeta de producto */
 .producto-card {
   background: #fff;
   border: 1px solid #ddd;
@@ -99,7 +143,12 @@ h2 {
   font-weight: bold;
   margin-bottom: 10px;
 }
-
+.Name-Product {
+  text-decoration: none;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: 20px;
+  color: #222;
+}
 p {
   font-size: 14px;
   margin: 5px 0;

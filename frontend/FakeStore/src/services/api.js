@@ -33,7 +33,7 @@ export default {
   },
 
   async CreateProducts(products) {
-    const response = await fetch(`${API_URL}/masive`, {  // La API usa "masive"
+    const response = await fetch(`${API_URL}/masive`, {  
       method: "POST",
       body: JSON.stringify(products),
       headers: { "Content-Type": "application/json" },
@@ -41,8 +41,8 @@ export default {
     return response.json();
   },
 
-  async UpdateProduct(id, producto) {
-    const response = await fetch(`${API_URL}/${id}`, {
+  async UpdateProduct(producto) {
+    const response = await fetch(`${API_URL}/${producto.id}`, {
       method: "PUT",
       body: JSON.stringify(producto),
       headers: { "Content-Type": "application/json" },
